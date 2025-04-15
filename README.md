@@ -70,7 +70,11 @@ Very minimal snippets of code were copied from LLMs, to the best of my knowledge
 # Starting the worker that handles the tasks in the backgroung
 threading.Thread(target=predict_task_runner, daemon=True).start()
 ```
-- The RabbitMQ/pika connection **retry** logic. This was because I only found out I needed this when I ran the app and rabbitMQ containers together and realized the rabbitMQ container took a few seconds to start up and the FastAPI server was trying to connect to it before it was ready..
+- The RabbitMQ/pika connection **retry** logic. This was because I only found out I needed this when I ran the app and rabbitMQ containers together and realized the rabbitMQ container took a few seconds to start up and the FastAPI server was trying to connect to it before it was ready.
+```python
+for attempt in range(1, retries + 1):
+        try:
+```
 - The initial connection code to RabbitMQ: 
 ```python
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
