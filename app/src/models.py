@@ -30,10 +30,10 @@ class PredictionTaskResult(TypedDict):
     prediction_id: str
     output: PredictionResult
 
-class Task(TypedDict):
+class TaskResult(TypedDict):
     """
     Model for Task in task queue
     """
-    status: Literal["PROCESSING", "DONE"]
+    status: Literal["QUEUED", "DONE"]
     task_result: Optional[PredictionTaskResult]
     

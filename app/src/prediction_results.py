@@ -1,9 +1,9 @@
-from models import Task    
+from models import TaskResult    
 
-results_dict: dict[str, Task] = {
+results_dict: dict[str, TaskResult] = {
     
     "1" : {
-        "status": "DONE",
+        "status": "QUEUED",
         
         "task_result": {
             "prediction_id": "abc123",

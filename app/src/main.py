@@ -1,12 +1,11 @@
 from fastapi import FastAPI, Header, Request
 from fastapi.responses import JSONResponse
-from app.src.predict import mock_model_predict
+from predict import mock_model_predict
 from models import PredictInputData
 from prediction_results import results_dict
 from uuid import UUID
-from background_task_runner import queue_task, predict_task_runner
+from background_task_runner import queue_task, predict_task_runner, add_task_to_rabbitmq, RabbitMQConnection
 import threading, logging, time
-
 
 # Starting the worker that handles the tasks in the backgroung
 threading.Thread(target=predict_task_runner, daemon=True).start()
@@ -24,7 +23,7 @@ async def handle_predict(data: PredictInputData, Async_Mode: str | None = Header
     try: 
         # If async-mode header is true
         if Async_Mode == "true":
-            task_id = queue_task(task_data=data)
+            task_id = queue_task(data)
             return JSONResponse(
                 content={
                     "message": "Request received. Processing asynchronously.",
@@ -55,7 +54,7 @@ async def get_prediction_task(prediction_id: str):
         if task := results_dict.get(prediction_id, None):
             
             # if task is still processing
-            if task["status"]=="PROCESSING": # If task not done yet.
+            if task["status"]=="QUEUED": # If task not done yet.
                 return JSONResponse(
                     content={
                         "error": "Prediction is still being processed."
@@ -88,3 +87,7 @@ async def get_prediction_task(prediction_id: str):
                 "error": str(e)
             },
             status_code=500)
+        
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
