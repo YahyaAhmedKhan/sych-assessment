@@ -54,7 +54,7 @@ def rabbitmq_task_handler(ch, method, properties, body):
             "output":pred_result
         }
     }
-    print(f"Finished task {task_id}")
+    print(f"Finished task {task_id}\n")
     
     # Acknowledge message to RabbitMQ queue
     ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -66,26 +66,16 @@ def predict_task_runner():
     and processing them.
     """
     print("Task runner with RabbitMQ started!\n")
-    rabbbitMQ_channel = connect_to_rabbitmq()
     
+    # Separate channel connection for this as it runs on a background thread and pika is not thread safe.
+    # So I couldn't use the same connection channel for both.
+    rabbbitMQ_channel = connect_to_rabbitmq()
     rabbbitMQ_channel.basic_qos(prefetch_count=1)
+    
+    # Defining the consume callback
     rabbbitMQ_channel.basic_consume(
         queue="sych-app-tasks",
-        on_message_callback=rabbitmq_task_handler
+        on_message_callback=rabbitmq_task_handler # This function runs evrytime a message is read from the quque
     )
-    rabbbitMQ_channel.start_consuming()
     
-    # while True:
-    #     task = tasks_queue.get()
-    #     print(f"Starting task :{task.task_id}")
-    #     result = mock_model_predict(task.task_data.input)
-        
-    #     results_dict[task.task_id] = {
-    #         "status": "DONE",
-    #         "task_result": {
-    #             "prediction_id": task.task_id,
-    #             "output": result
-    #         }
-    #     }
-    #     print(f"Finished task {task.task_id}")
-    #     tasks_queue.task_done()
+    rabbbitMQ_channel.start_consuming()
