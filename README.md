@@ -6,7 +6,7 @@ This project is a FastAPI server that works with a RabbitMQ container to handle 
 ## Installation
 Ensure you have Docker and Docker Compose installed on your machine.
 
-To start the application and its dependencies, simply run:
+To start the application and its dependencies, from the root of the project, simply run:
 
 ```bash
 docker-compose up --build -d
