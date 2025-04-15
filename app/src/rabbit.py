@@ -2,18 +2,27 @@ import pika
 from pika.adapters.blocking_connection import BlockingChannel
 from models import PredictInputData, PredictTask
 import os
+import time
+from pika.exceptions import AMQPConnectionError
 
 
-def connect_to_rabbitmq()->BlockingChannel:
-    # Connect to RabbitMQ server (localhost if running locally)
+
+def connect_to_rabbitmq(retries: int = 10, delay: int = 3) -> BlockingChannel:
     rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+    print(f"Connecting to RabbitMQ at host: {rabbitmq_host}", flush=True)
 
-    connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_host))
-    channel = connection.channel()
+    for attempt in range(1, retries + 1):
+        try:
+            connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitmq_host))
+            channel = connection.channel()
+            channel.queue_declare(queue='sych-app-tasks')
+            print("Successfully connected to RabbitMQ and declared queue.", flush=True)
+            return channel
+        except AMQPConnectionError as e:
+            print(f"[Attempt {attempt}] RabbitMQ not ready: {e}. Retrying in {delay}s...", flush=True)
+            time.sleep(delay)
 
-    # Create a queue named 'my_queue'
-    channel.queue_declare(queue='sych-app-tasks')
-    return channel
+    raise RuntimeError("Failed to connect to RabbitMQ after several retries.")
         
 def add_task_to_rabbitmq(channel:BlockingChannel , task_id:str, task_data:PredictInputData):
     try: 
