@@ -17,19 +17,29 @@ The routes for interacting with the server are as specified in the document.
 ### Queue technology
 I initially implemented the server using a simple python queue, and then switched to RabbitMQ.
 
-
 ### Storage of scheduled tasks
 For the storage of the scheduled tasks, I used a simple in-memory dictionary. This is not suitable for production, but it was allowed for the assessment. I did have to take care to make sure the dictionary was not recreated on each import from its file, as I thought the file would run on every import but I was wrong, so the Singleton pattern was not needed.
 
 ### Background task handler 
 For the background task handler I simple used a separate thread, done as so:
 
-### Type hints and Classes
+### Type hints and Classes & Documentation
+I documented most functions, although I may have missed a few. There wasn't much complex logic anywhere but I tried to add comments to explain the flow of my logic where necessary. I added docstrings to some functions as well, where it wasn't already blatantly obvious what they did.
+
 I utilizes Pydantic in most of the classes, it helped greatly in validating the data and ensuring that the data being passed around was of the correct type. I used the typing library in a few places, as it helped me define a dictionary's key, although this could definitely have been done through Pydantic, not the best practice.
 
 All the class models are defined in the `models.py` file.
 
 ### Docker
+I didn't really optimize the docker images, although I am aware of how to do it, using multi-stage builds, using lighter versions of python/image version like alpine etc. The reason for this is that I use docker on MacOS and was already had lot of issues/docker crashing when I was working with the RabbitMQ container, this is also why I used RabbitMQ without the management plugin, as that container would cause the docker daemon to crash.
+
+The size of the images was as follows:
+```bash
+REPOSITORY      TAG       IMAGE ID       CREATED          SIZE
+sych-task-app   latest    ea927bb144b8   54 minutes ago   317MB
+rabbitmq        latest    ae357d040e6f   26 hours ago     365MB
+```
+
 The project is containerized using Docker. The `docker-compose.yml` file defines the services required to run the application, including the FastAPI server and RabbitMQ.
 
 The FastAPI server is built using the `Dockerfile` provided in the project root. The server is exposed on port 8080, and RabbitMQ is exposed on port 5672.
