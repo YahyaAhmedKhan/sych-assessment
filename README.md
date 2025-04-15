@@ -72,8 +72,12 @@ threading.Thread(target=predict_task_runner, daemon=True).start()
 ```
 - The RabbitMQ/pika connection **retry** logic. This was because I only found out I needed this when I ran the app and rabbitMQ containers together and realized the rabbitMQ container took a few seconds to start up and the FastAPI server was trying to connect to it before it was ready.
 ```python
-for attempt in range(1, retries + 1):
-        try:
+def connect_to_rabbitmq(retries: int = 10, delay: int = 3) -> BlockingChannel:
+    rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+    print(f"Connecting to RabbitMQ at host: {rabbitmq_host}", flush=True)
+
+    for attempt in r:
+        ...
 ```
 - The initial connection code to RabbitMQ: 
 ```python
