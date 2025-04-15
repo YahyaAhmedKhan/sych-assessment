@@ -50,22 +50,3 @@ class RabbitMQConnection:
             cls._channel = connect_to_rabbitmq()
         return cls._channel
 
-
-# add_task_to_rabbitmq(rabbbitMQ_channel, "1", PredictInputData(input="1"))
-# add_task_to_rabbitmq(rabbbitMQ_channel, "1", PredictInputData(input="1"))
-# add_task_to_rabbitmq(rabbbitMQ_channel, "1", PredictInputData(input="1"))
-# add_task_to_rabbitmq(rabbbitMQ_channel, "1", PredictInputData(input="1"))
-# add_task_to_rabbitmq(rabbbitMQ_channel, "1", PredictInputData(input="1"))
-
-# import time
-# def handles(ch, m, p, body):
-#     print(body.decode())
-#     time.sleep(0.5)
-#     ch.basic_ack(delivery_tag=m.delivery_tag)
-    
-# rabbbitMQ_channel.basic_qos(prefetch_count=1)
-# rabbbitMQ_channel.basic_consume(
-#     queue="sych-app-tasks",
-#     on_message_callback=handles
-# )
-# rabbbitMQ_channel.start_consuming()
