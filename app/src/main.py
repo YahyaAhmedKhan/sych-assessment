@@ -1,11 +1,10 @@
-from fastapi import FastAPI, Header, Request
+from fastapi import FastAPI, Header
 from fastapi.responses import JSONResponse
 from predict import mock_model_predict
 from models import PredictInputData
 from prediction_results import results_dict
-from uuid import UUID
-from background_task_runner import queue_task, predict_task_runner, add_task_to_rabbitmq, RabbitMQConnection
-import threading, logging, time
+from background_task_runner import queue_task, predict_task_runner
+import threading
 
 # Starting the worker that handles the tasks in the backgroung
 threading.Thread(target=predict_task_runner, daemon=True).start()

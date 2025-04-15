@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from fastapi import Header
 from typing import TypedDict, Literal, Optional
-from uuid import UUID
     
 class PredictInputData(BaseModel): 
     """

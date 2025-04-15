@@ -1,11 +1,9 @@
-from pydantic import BaseModel
 from queue import Queue
-from models import PredictTask, PredictInputData, TaskResult
-from uuid import uuid4, UUID
+from models import PredictTask, PredictInputData
+from uuid import uuid4
 from predict import mock_model_predict
 from prediction_results import results_dict
 from rabbit import add_task_to_rabbitmq, RabbitMQConnection, connect_to_rabbitmq
-from pika.adapters.blocking_connection import BlockingChannel
 import json
 
 tasks_queue:Queue[PredictTask] = Queue()

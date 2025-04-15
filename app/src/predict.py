@@ -1,6 +1,5 @@
 import time
 import random
-from typing import Dict
 from models import PredictionResult
 
 def mock_model_predict(input: str) -> PredictionResult: 
