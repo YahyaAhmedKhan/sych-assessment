@@ -1,18 +1,25 @@
 from pydantic import BaseModel
 from queue import Queue
-from models import PredictInputData, Task
+from models import PredictTask, PredictInputData, Task
 from uuid import uuid4, UUID
-from mock_model import mock_model_predict
+from app.src.predict import mock_model_predict
 from prediction_results import results_dict
 
-class PredictTask(BaseModel):
-    task_id: UUID
-    task_data: PredictInputData
-    
 tasks_queue:Queue[PredictTask] = Queue()
 
 def queue_task(task_data: PredictInputData):
-    task_id = uuid4()
+    """
+    Generates a new task ID, adds a task to the queue, and returns the task ID.
+
+    Args:
+        task_data (PredictInputData): The input data for the prediction task.
+
+    Returns:
+        str: A unique task ID assigned to the queued task.
+    """
+    
+    # Generating a new uuid
+    task_id = str(uuid4())
     print(f"task queued {task_id}")
     results_dict[task_id] = {
         "status": "DONE",
@@ -28,6 +35,10 @@ def queue_task(task_data: PredictInputData):
     
 
 def predict_task_runner():
+    """
+    Runs the task processing loop, continuously fetching tasks from the queue 
+    and processing them.
+    """
     print("Task runner started!")
     
     while True:
@@ -44,8 +55,3 @@ def predict_task_runner():
         }
         print(f"Finished task {task.task_id}")
         tasks_queue.task_done()
-        
-
-
-        
-        
