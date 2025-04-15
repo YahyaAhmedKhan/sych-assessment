@@ -8,3 +8,8 @@ dependencies = [
     "fastapi>=0.115.12",
     "uvicorn[standard]>=0.34.1",
 ]
+[tool.setuptools]
+package-dir = {"" = "app/src"}
+
+[tool.setuptools.packages.find]
+where = ["app/src"]
