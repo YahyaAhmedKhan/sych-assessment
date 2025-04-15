@@ -1,10 +1,14 @@
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
 from models import PredictInputData, PredictTask
+import os
+
 
 def connect_to_rabbitmq()->BlockingChannel:
     # Connect to RabbitMQ server (localhost if running locally)
-    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    rabbitmq_host = os.environ.get('RABBITMQ_HOST', 'localhost')
+
+    connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_host))
     channel = connection.channel()
 
     # Create a queue named 'my_queue'

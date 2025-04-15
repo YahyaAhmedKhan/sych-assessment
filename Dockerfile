@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir uv
 RUN uv pip install --system --no-cache-dir -e .
 
 # Expose port that FastAPI will run on
-EXPOSE 8000
+EXPOSE 8080
 
 # Start the FastAPI application
 CMD ["uvicorn", "app.src.main:app", "--host", "0.0.0.0", "--port", "8080"]
