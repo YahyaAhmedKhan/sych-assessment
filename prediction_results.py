@@ -8,8 +8,8 @@ results_dict: dict[UUID, Task] = {
         "status": "DONE",
         
         "task_result": {
-            "message": "Request received. Processing asynchronously.",
-            "prediction_id": "abc123"
+            "prediction_id": "abc123",
+            "output": {"input": "Sample input data for the model", "result": "5678"} 
             }
     }
 }

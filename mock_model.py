@@ -1,11 +1,11 @@
 import time
 import random
 from typing import Dict
-from 
+from models import PredictionResult
 
-def mock_model_predict(input: str) -> :
+def mock_model_predict(input: str) -> PredictionResult: 
     time.sleep(random.randint(2, 3)) # Simulate processing delay
     # time.sleep(random.randint(10, 17)) # Simulate processing delay
     result = str(random.randint(1000, 20000))
-    output = {"input": input, "result": result}
+    output:PredictionResult = {"input": input, "result": result}
     return output

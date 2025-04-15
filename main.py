@@ -3,6 +3,11 @@ from mock_model import mock_model_predict
 from models import PredictInputData
 from prediction_results import results_dict
 from uuid import UUID
+from background_task_runner import queue_task, predict_task_runner
+import threading
+
+threading.Thread(target=predict_task_runner, daemon=True).start()
+
 
 app = FastAPI()
 
@@ -14,19 +19,26 @@ async def root():
 @app.post("/predict")
 async def handle_predict(data: PredictInputData, Async_Mode: str | None = Header(default=None)):
     if Async_Mode:
-        pass
-    
+        task_id = queue_task(task_data=data)
+        return {
+            "message": "Request received. Processing asynchronously.",
+            "prediction_id": str(task_id)
+            }
     else:
         return mock_model_predict(data.input)
 
 @app.get("/predict/{prediction_id}")
 async def get_prediction_task(prediction_id: str):
-    try:
-        pass
-    except:
-        return 
     
-    if task := results_dict.get(UUID(prediction_id), None):
+    task_id_uuid = None
+    try:
+        task_id_uuid = UUID(prediction_id)
+    except:
+        return {
+            "error": "Prediction ID not found."
+            }
+    
+    if task := results_dict.get(task_id_uuid, None):
         if task["status"]=="PROCESSING": # If task not done yet.
             return {
                 "error": "Prediction is still being processed."
